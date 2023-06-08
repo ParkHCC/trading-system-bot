@@ -1,0 +1,14 @@
+
+//@version=5
+strategy("예제전략", overlay=true)
+
+trix = 10000 * ta.change(ta.ema(ta.ema(ta.ema(math.log(close), 18), 18), 18))
+
+longCondition = trix < -1 and ta.crossover(trix, trix[5])
+if (longCondition)
+    strategy.entry("매수", strategy.long, qty=math.floor((close/100000)*1000000)/1000000, alert_message="{'market' : 'BTCUSDT', 'side' : 'sell', ' volume' : '100000', 'ord_type' : 'market'}")
+
+shortCondition = trix > 1 and ta.crossunder(trix, trix[5])
+if (shortCondition or close < strategy.position_avg_price*0.97)
+    strategy.close("매수", alert_message="{'market' : 'BTCUSDT', 'side' : 'sell', ' volume' : '" + str.tostring(strategy.position_size) + "', 'ord_type' : 'market'}")
+    
